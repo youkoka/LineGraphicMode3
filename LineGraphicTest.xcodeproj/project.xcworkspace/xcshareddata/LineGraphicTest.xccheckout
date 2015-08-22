@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>0748CC64-E6A5-4FD9-A31F-ED86CCAC4E30</string>
+	<key>IDESourceControlProjectName</key>
+	<string>LineGraphicTest</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>FA7A56734E790F5A75BB794481AA1236911FCFEB</key>
+		<string>https://github.com/youkoka/LineGraphicTest.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>LineGraphicTest.xcodeproj</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>FA7A56734E790F5A75BB794481AA1236911FCFEB</key>
+		<string>../..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>https://github.com/youkoka/LineGraphicTest.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>111</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>FA7A56734E790F5A75BB794481AA1236911FCFEB</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>FA7A56734E790F5A75BB794481AA1236911FCFEB</string>
+			<key>IDESourceControlWCCName</key>
+			<string>LineGraphicTest</string>
+		</dict>
+	</array>
+</dict>
+</plist>
