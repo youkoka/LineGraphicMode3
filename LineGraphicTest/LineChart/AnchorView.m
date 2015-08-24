@@ -21,7 +21,6 @@
 #if !__has_feature(objc_arc)
 -(void) dealloc
 {
-    OBJC_RELEASE(self.dicDataSource);
     OBJC_RELEASE(self.xValue);
     [super dealloc];
 }
@@ -48,8 +47,6 @@
 
 -(void) dealloc
 {
-    OBJC_RELEASE(self.dicDataSource);
-    
     [super dealloc];
 }
 
@@ -93,7 +90,7 @@
         
         if ([self.anchorDelegate respondsToSelector:@selector(didSelectAnchorPoint:)]) {
             
-            [self.anchorDelegate didSelectAnchorPoint:self.dicDataSource];
+            [self.anchorDelegate didSelectAnchorPoint:self.anchorDataAry];
         }
     }
 }

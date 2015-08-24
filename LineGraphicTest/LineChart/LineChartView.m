@@ -156,7 +156,9 @@
             
                 anchor.center = CGPointMake(startAnchorPoint1.x, startAnchorPoint1.y);
                 anchor.anchorDelegate = self;
-                anchor.dicDataSource = startItem.dicDataSource;
+                anchor.anchorDataAry = [NSArray arrayWithObjects:startItem.xValue,
+                                        [NSString stringWithFormat:@"%f", startItem.y1Value],
+                                        [NSString stringWithFormat:@"%f", startItem.y2Value], nil];
                 anchor.anchorColor = [UIColor redColor];
                 [self.anchorAry addObject:anchor];
                 
@@ -184,7 +186,9 @@
                 
                 anchor.center = CGPointMake(startAnchorPoint2.x, startAnchorPoint2.y);
                 anchor.anchorDelegate = self;
-                anchor.dicDataSource = startItem.dicDataSource;
+                anchor.anchorDataAry = [NSArray arrayWithObjects:startItem.xValue,
+                                        [NSString stringWithFormat:@"%f", startItem.y1Value],
+                                        [NSString stringWithFormat:@"%f", startItem.y2Value], nil];
                 anchor.anchorColor = [UIColor orangeColor];
                 [self.anchorAry addObject:anchor];
                 
@@ -499,9 +503,9 @@
 
 #pragma mark - anchor event
 
--(void) didSelectAnchorPoint:(NSDictionary *)dicDataSource
+-(void) didSelectAnchorPoint:(NSArray *)anchorDataAry
 {
-    NSLog(@"%@", [dicDataSource valueForKey:@"value"]);
+    NSLog(@"%@", anchorDataAry);
 }
 
 @end

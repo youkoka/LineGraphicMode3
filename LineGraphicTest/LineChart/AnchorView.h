@@ -11,7 +11,7 @@
 @protocol AnchorDelefate <NSObject>
 
 //! 回傳資料
--(void) didSelectAnchorPoint:(NSDictionary *) dicDataSource;
+-(void) didSelectAnchorPoint:(NSArray *) anchorDataAry;
 
 @end
 
@@ -24,9 +24,6 @@
 //! 是否顯示Y軸線
 @property BOOL isShowYAxisLine;
 
-//! 存放資料
-@property (nonatomic, strong) NSDictionary *dicDataSource;
-
 @end
 
 @interface AnchorView : UIView
@@ -36,6 +33,6 @@
 @property (nonatomic, assign) UIColor *anchorColor;
 
 //! 存放資料
-@property (nonatomic, strong) NSDictionary *dicDataSource;
+@property (nonatomic, strong) NSArray *anchorDataAry;
 
 @end

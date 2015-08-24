@@ -47,8 +47,6 @@
         item.xValue = [NSString stringWithFormat:@"%ld", xVal];
         item.y1Value = 10 + (rand() % 100) * 0.01;
         item.y2Value = 8 + (rand() % 100) * 0.01;
-//        item.isShowYAxisLine = (xVal % 1200) == 0 ? YES : NO;
-        item.dicDataSource = [NSDictionary dictionaryWithObject:[NSString stringWithFormat:@"%@,%f", item.xValue, item.y1Value] forKey:@"value"];
         [self.dataSourceAry addObject:item];
         
         [labelAry addObject:[NSString stringWithFormat:@"%@/%f", item.xValue, item.y1Value]];
