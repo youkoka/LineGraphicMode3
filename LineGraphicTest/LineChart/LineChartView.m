@@ -19,14 +19,6 @@
 //! 產生 X/Y軸刻度
 -(void) buildAxisStepByDataSource;
 
-@property (nonatomic, assign) CGFloat xMax;
-@property (nonatomic, assign) CGFloat xMin;
-
-@property (nonatomic, assign) CGFloat yMax;
-@property (nonatomic, assign) CGFloat yMin;
-@property (nonatomic, assign) CGFloat y1Min;
-@property (nonatomic, assign) CGFloat y2Min;
-
 @end
 
 @implementation LineChartView
@@ -142,11 +134,11 @@
         
         AnchorItem *startItem = [self.dataSourceAry objectAtIndex:i];
         
-        CGFloat startPos = (self.rightBottomPoint.x - self.originPoint.x) / (self.xMax - self.xMin) * (startItem.xValue - self.xMin) + self.originPoint.x + self.contentScroll.x;
+        CGFloat startPos = self.xPerStepWidth * i + self.originPoint.x + self.contentScroll.x;
         
         startAnchorPoint1.x = startPos;
         
-        startAnchorPoint1.y = (self.leftTopPoint.y - self.originPoint.y) * ( (startItem.y1Value - self.yMin) / (self.yMax - self.yMin)) + self.originPoint.y + self.contentScroll.y;
+        startAnchorPoint1.y = self.drawContentHeight * ( (startItem.y1Value - self.yMin) / (self.yMax - self.yMin)) + self.originPoint.y + self.contentScroll.y;
         
         //! 畫點, 範圍區塊內才畫
         if ((startAnchorPoint1.x >= self.originPoint.x && startAnchorPoint1.x <= (self.rightBottomPoint.x + self.edgeInset.right)) &&
@@ -174,8 +166,8 @@
         
         startAnchorPoint2.x = startPos;
         
-        startAnchorPoint2.y = (self.leftTopPoint.y - self.originPoint.y) * ( (startItem.y2Value - self.yMin) / (self.yMax - self.yMin)) + self.originPoint.y + self.contentScroll.y;
-        
+        startAnchorPoint2.y = self.drawContentHeight * ( (startItem.y2Value - self.yMin) / (self.yMax - self.yMin)) + self.originPoint.y + self.contentScroll.y;
+
         //! 畫點, 範圍區塊內才畫
         if ((startAnchorPoint2.x >= self.originPoint.x && startAnchorPoint2.x <= (self.rightBottomPoint.x + self.edgeInset.right)) &&
             (startAnchorPoint2.y >= self.originPoint.y && startAnchorPoint2.y <= (self.rightTopPoint.y + self.edgeInset.top)) &&
@@ -200,17 +192,16 @@
             }
         }
         
-        
         //! 畫點對點連接線及指示線
         if (i + 1 < [self.dataSourceAry count]) {
             
             AnchorItem *endItem = [self.dataSourceAry objectAtIndex:i + 1];
             
-            CGFloat endPos = (self.rightBottomPoint.x - self.originPoint.x) / (self.xMax - self.xMin) * (endItem.xValue - self.xMin) + self.originPoint.x + self.contentScroll.x;
+            CGFloat endPos = self.xPerStepWidth * (i + 1) + self.originPoint.x + self.contentScroll.x;
             
-            float y1Position =  (self.leftTopPoint.y - self.originPoint.y) * ( (endItem.y1Value - self.yMin) / (self.yMax - self.yMin)) + self.originPoint.y + self.contentScroll.y;
+            float y1Position =  self.drawContentHeight * ( (endItem.y1Value - self.yMin) / (self.yMax - self.yMin)) + self.originPoint.y + self.contentScroll.y;
             
-            float y2Position =  (self.leftTopPoint.y - self.originPoint.y) * ( (endItem.y2Value - self.yMin) / (self.yMax - self.yMin)) + self.originPoint.y + self.contentScroll.y;
+            float y2Position =  self.drawContentHeight * ( (endItem.y2Value - self.yMin) / (self.yMax - self.yMin)) + self.originPoint.y + self.contentScroll.y;
             
             endAnchorPoint1.x = endPos;
             endAnchorPoint1.y = y1Position;
@@ -265,12 +256,12 @@
         CGContextSetLineDash(context, 0.0, xPattern, 2);
     }
     
-    for (NSInteger i = 0; i < [self.y1Array count]; i++) {
+    for (NSInteger i = 0; i < self.yDrawLineCount; i++) {
         
-        CGFloat yPosition = self.originPoint.y + (i + 1) * self.yPerStepHeight + self.contentScroll.y;
+        CGFloat yPosition = self.drawContentHeight * ( ([[self.yArray objectAtIndex:i] floatValue] - self.yMin) / (self.yMax - self.yMin)) + self.originPoint.y + self.contentScroll.y;;
         
         //! 範圍區塊內才畫
-        if (yPosition > self.originPoint.y && fabs(yPosition - self.originPoint.y) <= self.frame.size.height) {
+        if (yPosition >= self.originPoint.y && fabs(yPosition - self.originPoint.y) <= self.frame.size.height) {
             
             if (self.drawLineTypeOfX == LineDrawTypeNone) {
             
@@ -291,7 +282,7 @@
             }
             
             //! 顯示文字
-            NSString *valStr = [NSString stringWithFormat:@"%.2lf", [self.y1Array[i] floatValue]];
+            NSString *valStr = [NSString stringWithFormat:@"%.2lf", [self.yArray[i] floatValue]];
             CGSize size = [valStr sizeWithFont:[UIFont fontWithName:@"Helvetica" size:12]];
             [[UIColor colorWithCGColor:self.xTextColor.CGColor] set];
             CGContextSelectFont(context, "Helvetica", 12, kCGEncodingMacRoman);
@@ -302,11 +293,14 @@
     
 #pragma mark 畫 X 軸上 Y 軸(虛)線
 
-    for (NSInteger i = 0; i < [self.xArray count]; i++) {
+    for (NSInteger i = 0; i < self.xDrawLineCount; i++) {
         
-        CGFloat xValue = 0.0;
+        //! 顯示文字
+        NSString *valStr = @"";
         
         CGFloat xPosition = 0.0f;
+        
+        BOOL isShowYAxisLine = YES;
         
         if ([self.lineLabelAry count] > 0) {
             
@@ -315,8 +309,8 @@
                 xPosition = self.originPoint.x + self.contentScroll.x;
             }
             else {
-            
-                xPosition = (self.rightBottomPoint.x - self.originPoint.x) / ([self.lineLabelAry count] - 1) * i + self.originPoint.x + self.contentScroll.x;
+                
+                xPosition = self.xPerStepWidth * i + self.originPoint.x + self.contentScroll.x;
             }
         }
         else {
@@ -324,15 +318,16 @@
             if (i < [self.dataSourceAry count]) {
                 
                 AnchorItem *anchorItem = [self.dataSourceAry objectAtIndex:i];
-            
-                xPosition = (self.rightBottomPoint.x - self.originPoint.x) / (self.xMax - self.xMin) * (anchorItem.xValue - self.xMin) + self.originPoint.x + self.contentScroll.x;
                 
-                xValue = anchorItem.xValue;
+                xPosition = self.xPerStepWidth * i + self.originPoint.x + self.contentScroll.x;
+                valStr = anchorItem.xValue;
+                
+                isShowYAxisLine = anchorItem.isShowYAxisLine;
             }
         }
         
         //! 範圍區塊內才畫
-        if (xPosition >= self.originPoint.x && fabs(xPosition - self.originPoint.x) <= self.frame.size.width) {
+        if (xPosition >= self.originPoint.x && fabs(xPosition - self.originPoint.x) <= self.frame.size.width && isShowYAxisLine == YES) {
             
             if (self.drawLineTypeOfY == LineDrawTypeNone) {
                 
@@ -349,19 +344,13 @@
                             lineColor:self.yLineColor width:0.5f];
             }
             
-            //! 顯示文字
-            NSString *valStr = @"";
             
-            if ([self.lineLabelAry count] > 0) {
+            
+            if ([self.lineLabelAry count] > 0 && i < [self.lineLabelAry count]) {
 
                 valStr = self.lineLabelAry[i];                
             }
-            else {
-                
-                    
-                valStr = [NSString stringWithFormat:@"%.lf", xValue];
-            }
-
+           
             CGSize size = [valStr sizeWithFont:[UIFont fontWithName:@"Helvetica" size:12]];
             [[UIColor colorWithCGColor:self.yTextColor.CGColor] set];
             CGContextSelectFont(context, "Helvetica", 12, kCGEncodingMacRoman);
@@ -392,22 +381,12 @@
         float y1Min, y2Min;
         
         AnchorItem *item = [self.dataSourceAry objectAtIndex:0];
-        self.xMin = item.xValue; self.xMax = item.xValue;
         y1Min = item.y1Value; self.yMax = item.y1Value;
         y2Min = item.y2Value; self.yMax = item.y2Value;
         
         for (NSInteger i = 1; i < self.dataSourceAry.count; i++) {
             
             AnchorItem *item = [self.dataSourceAry objectAtIndex:i];
-            
-            if (item.xValue < self.xMin) {
-            
-                self.xMin = item.xValue;
-            }
-            else if (item.xValue > self.xMax) {
-            
-                self.xMax = item.xValue;
-            }
             
             if (item.y1Value < y1Min) {
             
@@ -447,14 +426,14 @@
             self.xArray = [NSMutableArray arrayWithArray:self.dataSourceAry];
         }
         
-        //! y1軸刻度值
-        if (!self.y1Array) {
+        //! y軸刻度值
+        if (!self.yArray) {
         
-            self.y1Array = [NSMutableArray array];
+            self.yArray = [NSMutableArray array];
         }
         else {
         
-            [self.y1Array removeAllObjects];
+            [self.yArray removeAllObjects];
         }
         
         if (y1Min >= y2Min) {
@@ -471,11 +450,11 @@
         self.yMax += temp;
         self.yMin = (self.yMin - temp) >= 0 ? (self.yMin - temp) : 0;
         
-        self.y1PreStepValue = (self.yMax - self.yMin) / self.yLineCount;
+        self.yPreStepValue = (self.yMax - self.yMin) / self.yLineCount;
         
         for (int i = 0; i != self.yDrawLineCount; i++) {
             
-            [self.y1Array addObject:[NSNumber numberWithFloat: (self.yMin + i * self.y1PreStepValue)]];
+            [self.yArray addObject:[NSNumber numberWithFloat: (self.yMin + i * self.yPreStepValue)]];
         }
     }
     else if([self.dataSourceAry count] == 1) {
@@ -493,19 +472,27 @@
             [self.xArray removeAllObjects];
         }
         
-        [self.xArray addObject:[NSNumber numberWithFloat:anchorItem.xValue]];
-        
-        //! y1軸刻度
-        if (!self.y1Array) {
+        if ([self.lineLabelAry count] > 0) {
             
-            self.y1Array = [NSMutableArray array];
+            self.xArray = [NSMutableArray arrayWithArray:self.lineLabelAry];
         }
         else {
             
-            [self.y1Array removeAllObjects];
+            self.xArray = [NSMutableArray arrayWithArray:self.dataSourceAry];
+        }
+
+        
+        //! y軸刻度
+        if (!self.yArray) {
+            
+            self.yArray = [NSMutableArray array];
+        }
+        else {
+            
+            [self.yArray removeAllObjects];
         }
         
-        [self.y1Array addObject:[NSNumber numberWithFloat:anchorItem.y1Value]];
+        [self.yArray addObject:[NSNumber numberWithFloat:anchorItem.y1Value]];
     }
 }
 

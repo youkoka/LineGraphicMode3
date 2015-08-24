@@ -27,10 +27,6 @@ typedef NS_ENUM(NSInteger, LineDrawType)
 
 @property (readonly) UIEdgeInsets edgeInset;
 
-//! 2個 Y 軸
-//! default value : NO
-@property BOOL isMultipleY;
-
 //! X 軸虛線
 //! default value : LineDrawTypeNone
 @property LineDrawType drawLineTypeOfX;
@@ -39,12 +35,8 @@ typedef NS_ENUM(NSInteger, LineDrawType)
 //! default value : LineDrawTypeNone
 @property LineDrawType drawLineTypeOfY;
 
-//! X 軸刻度間距值
-@property CGFloat xPreStepValue;
-
-//! Y1/2 軸刻度間距值
-@property CGFloat y1PreStepValue;
-@property CGFloat y2PreStepValue;
+//! Y 軸刻度間距值
+@property CGFloat yPreStepValue;
 
 //! 線圖繪圖區塊原始寬度
 @property CGFloat drawOriginContentWidth;
@@ -91,14 +83,11 @@ typedef NS_ENUM(NSInteger, LineDrawType)
 //! 是否顯示提示框
 @property BOOL isShowTipLine;
 
-//! 縮放至螢幕大小
-@property BOOL isScaleToView;
-
 //! 是否使用者操作動作(移動, 縮放)
 @property BOOL isEnableUserAction;
 
-//! Y 軸上 X 軸(虛)線數量(不含軸線)
-@property (readonly) NSInteger xLineCount;
+//! Y 軸上 X 軸(虛)線數量(數量含軸線)
+@property NSInteger xLineCount;
 @property NSInteger yLineCount;
 
 @property NSInteger xDrawLineCount;
@@ -108,15 +97,22 @@ typedef NS_ENUM(NSInteger, LineDrawType)
 @property(readonly) CGFloat xPerStepWidth;
 @property(readonly) CGFloat yPerStepHeight;
 
+//! y軸最大/小值
+@property (nonatomic, assign) CGFloat yMax;
+@property (nonatomic, assign) CGFloat yMin;
+
 //! 是否顯示座標點
 @property BOOL isShowAnchorPoint;
 
 //! 縮放比例大小(預設值:1)
-@property CGFloat zoomScale;
+@property(readonly) CGFloat zoomScaleNow;
+
+//! 縮放最大比例(預設值:2)
+@property(assign) CGFloat zoomScaleMax;
 
 //! 折線間隔值
 @property (nonatomic, strong) NSMutableArray *xArray;
-@property (nonatomic, strong) NSMutableArray *y1Array;
+@property (nonatomic, strong) NSMutableArray *yArray;
 
 //! 依據畫面大小更新相關點的資訊
 -(void) updateViewWithFrame:(CGRect)frame;

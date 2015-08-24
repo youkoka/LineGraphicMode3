@@ -22,7 +22,7 @@
 -(void) dealloc
 {
     OBJC_RELEASE(self.dicDataSource);
-    OBJC_RELEASE(self.sLabel);
+    OBJC_RELEASE(self.xValue);
     [super dealloc];
 }
 
@@ -30,10 +30,10 @@
     
     if ( self = [super init]) {
         
-        self.xValue = 0.0f;
+        self.xValue = [NSString string];
         self.y1Value = 0.0f;
         self.y2Value = 0.0f;
-        self.sLabel = @"";
+        self.isShowYAxisLine = YES;
     }
     
     return self;

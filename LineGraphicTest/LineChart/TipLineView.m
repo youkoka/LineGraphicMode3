@@ -33,9 +33,6 @@
 -(void) dealloc
 {
     OBJC_RELEASE(self.dataSourceAry);
-    OBJC_RELEASE(self.xArray);
-    OBJC_RELEASE(self.y1Array);
-    OBJC_RELEASE(self.y2Array);
     OBJC_RELEASE(self.markerView);
     
     OBJC_RELEASE(self.tipLineColor);
@@ -48,7 +45,7 @@
     if ( self = [super init]) {
         
         self.isShowTipLine = YES;
-        self.hadDrawTipLine = NO;
+        self.hadDrawTipLine = YES;
         
         self.tipLineColor = [UIColor grayColor];
         self.tipTextColor = [UIColor blackColor];
@@ -58,10 +55,6 @@
         self.dataSourceAry = [NSArray array];
         self.xPerStepWidth = 0.0f;
         self.yPerStepHeight = 0.0f;
-        
-        self.xArray = [NSMutableArray array];
-        self.y1Array = [NSMutableArray array];
-        self.y2Array = [NSMutableArray array];
 
         self.markerView = [[[MarkerView alloc] initWithImage:[UIImage imageNamed:@"marker"]] autorelease];
         [self.markerView setFrame:CGRectMake(0, 0, 80, 40)];
@@ -89,10 +82,6 @@
         self.dataSourceAry = [NSArray array];
         self.xPerStepWidth = 0.0f;
         self.yPerStepHeight = 0.0f;
-        
-        self.xArray = [NSMutableArray array];
-        self.y1Array = [NSMutableArray array];
-        self.y2Array = [NSMutableArray array];
 
         self.markerView = [[[MarkerView alloc] initWithImage:[UIImage imageNamed:@"marker"]] autorelease];
         [self.markerView setFrame:CGRectMake(0, 0, 60, 40)];
@@ -108,6 +97,7 @@
 
 // Only override drawRect: if you perform custom drawing.
 // An empty implementation adversely affects performance during animation.
+
 - (void)drawRect:(CGRect)rect {
 
     CGContextRef context = UIGraphicsGetCurrentContext();
@@ -128,41 +118,31 @@
                 
                 AnchorItem *startItem = [self.dataSourceAry objectAtIndex:i];
                 
-                float xPerStepVal = [[self.xArray objectAtIndex:0] floatValue];
-                float y1PerStepVal = [[self.y1Array objectAtIndex:0] floatValue];
+                CGFloat startPos = self.xPerStepWidth * i + self.contentScroll.x;
                 
-                startAnchorPoint1.x = self.originPoint.x + ((self.xPerStepWidth * startItem.xValue) / xPerStepVal) + self.contentScroll.x;
+                startAnchorPoint1.x = startPos;
                 
-//                startAnchorPoint1.x = (_rightBottomPoint.x - _originPoint.x) / (self.xMax - self.xMin) * (startItem.xValue - self.xMin) + self.originPoint.x + self.contentScroll.x;
+                startAnchorPoint1.y = self.drawContentHeight * ( (startItem.y1Value - self.yMin) / (self.yMax - self.yMin)) + self.contentScroll.y;
                 
-                startAnchorPoint1.y = self.originPoint.y + fabs(((self.yPerStepHeight * startItem.y1Value) / y1PerStepVal)) + self.contentScroll.y;
+                startAnchorPoint2.x = startPos;
                 
-                
-                float y2PerStepVal = [[self.y2Array objectAtIndex:0] floatValue];
-                
-                
-//                startAnchorPoint2.x = (_rightBottomPoint.x - _originPoint.x) / (self.xMax - self.xMin) * (startItem.xValue - self.xMin) + self.originPoint.x + self.contentScroll.x;
-                
-                startAnchorPoint2.y = self.originPoint.y + fabs(((self.yPerStepHeight * startItem.y2Value) / y2PerStepVal)) + self.contentScroll.y;
+                startAnchorPoint2.y = self.drawContentHeight * ( (startItem.y2Value - self.yMin) / (self.yMax - self.yMin)) + self.contentScroll.y;
                 
                 //! 畫點對點連接線及指示線
                 if (i + 1 < [self.dataSourceAry count]) {
                     
                     AnchorItem *endItem = [self.dataSourceAry objectAtIndex:i + 1];
                     
-                    float xPerStepVal = [[self.xArray objectAtIndex:0] floatValue];
-                    float xPosition = self.originPoint.x + ((self.xPerStepWidth * endItem.xValue) / xPerStepVal) + self.contentScroll.x;
+                    CGFloat endPos = self.xPerStepWidth * (i + 1) + self.contentScroll.x;
                     
-                    float y1PerStepVal = [[self.y1Array objectAtIndex:0] floatValue];
-                    float y1Position = self.originPoint.y + fabs(((self.yPerStepHeight * endItem.y1Value) / y1PerStepVal)) + self.contentScroll.y;
+                    float y1Position =  self.drawContentHeight * ( (endItem.y1Value - self.yMin) / (self.yMax - self.yMin)) + self.contentScroll.y;
                     
-                    float y2PerStepVal = [[self.y2Array objectAtIndex:0] floatValue];
-                    float y2Position = self.originPoint.y + fabs(((self.yPerStepHeight * endItem.y2Value) / y2PerStepVal)) + self.contentScroll.y;
+                    float y2Position =  self.drawContentHeight * ( (endItem.y2Value - self.yMin) / (self.yMax - self.yMin)) + self.contentScroll.y;
                     
-                    endAnchorPoint1.x = xPosition;
+                    endAnchorPoint1.x = endPos;
                     endAnchorPoint1.y = y1Position;
                     
-                    endAnchorPoint2.x = xPosition;
+                    endAnchorPoint2.x = endPos;
                     endAnchorPoint2.y = y2Position;
                     
                     CGFloat yPattern[1]= {1};
@@ -173,15 +153,8 @@
                     //! 指示線
                     if (startAnchorPoint1.x <= self.tapLocation.x && endAnchorPoint1.x >= self.tapLocation.x) {
                         
-                        if (![startItem.sLabel isEqualToString:@""]) {
-                            
-                            self.markerView.title = startItem.sLabel;
-                        }
-                        else {
-                            
-                            self.markerView.title = [NSString stringWithFormat:@"%.2f", startItem.xValue];
-                        }
-
+                        self.markerView.title = startItem.xValue;
+                      
                         //! 判斷上半部或下半部
                         if (fabs(startAnchorPoint1.x - self.tapLocation.x) <= fabs(endAnchorPoint1.x - self.tapLocation.x) ) {
                             
@@ -200,15 +173,7 @@
                         }
                         else {
                             
-                            if (![endItem.sLabel isEqualToString:@""]) {
-                                
-                                self.markerView.title = endItem.sLabel;
-                            }
-                            else {
-                                
-                                self.markerView.title = [NSString stringWithFormat:@"%.2f", endItem.xValue];
-                            }
-
+                            self.markerView.title = endItem.xValue;
                             
                             if (fabs(self.tapLocation.y - endAnchorPoint1.y) <= fabs(self.tapLocation.y - endAnchorPoint2.y)) {
                                 
@@ -232,23 +197,23 @@
                         
                             self.markerView.center = CGPointMake(self.frame.size.width - (self.markerView.frame.size.width / 2), self.markerView.center.y);
                         }
-                        else if((self.markerView.center.x - self.markerView.frame.size.width / 2) < self.originPoint.x) {
+                        else if((self.markerView.center.x - self.markerView.frame.size.width / 2) <= 0) {
                             
-                            self.markerView.center = CGPointMake(self.originPoint.x + (self.markerView.frame.size.width / 2), self.markerView.center.y);
+                            self.markerView.center = CGPointMake((self.markerView.frame.size.width / 2), self.markerView.center.y);
                         }
                         
                         self.markerView.tipTextColor = self.tipTextColor;
                         
                         //! 橫線
                         [ChartCommon drawLine:context
-                                   startPoint:CGPointMake(self.originPoint.x, tipPoint.y)
+                                   startPoint:CGPointMake(0, tipPoint.y)
                                      endPoint:CGPointMake(self.frame.size.width, tipPoint.y)
                                     lineColor:self.tipLineColor width:1.0f];
                         
                         //! 豎線
                         [ChartCommon drawLine:context
                                    startPoint:CGPointMake(tipPoint.x, self.self.frame.size.height)
-                                     endPoint:CGPointMake(tipPoint.x, self.originPoint.y)
+                                     endPoint:CGPointMake(tipPoint.x, 0)
                                     lineColor:self.tipLineColor width:1.0f];
                         
                         self.hadDrawTipLine = YES;

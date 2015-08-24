@@ -16,17 +16,28 @@
 //! X軸最遠點
 @property(assign) CGPoint rightBottomPoint;
 
+//! 左Y軸最遠點
+@property(assign) CGPoint leftTopPoint;
+
+//! 右Y軸最遠點
+@property(assign) CGPoint rightTopPoint;
+
 //! 軸線間隔大小
 @property(assign) CGFloat xPerStepWidth;
 @property(assign) CGFloat yPerStepHeight;
 
+//! 線圖繪圖區塊寬度
+@property CGFloat drawContentWidth;
+
+//! 線圖繪圖區塊高度
+@property CGFloat drawContentHeight;
+
+//! y軸最大/小值
+@property (nonatomic, assign) CGFloat yMax;
+@property (nonatomic, assign) CGFloat yMin;
+
 //! 畫面位移值
 @property(assign) CGPoint contentScroll;
-
-//! 折線間隔值
-@property (nonatomic, strong) NSMutableArray *xArray;
-@property (nonatomic, strong) NSMutableArray *y1Array;
-@property (nonatomic, strong) NSMutableArray *y2Array;
 
 @property (assign) UIEdgeInsets edgeInset;
 

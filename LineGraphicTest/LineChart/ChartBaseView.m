@@ -36,7 +36,7 @@
     OBJC_RELEASE(self.lineLabelAry);
     OBJC_RELEASE(self.tipLineView);
     OBJC_RELEASE(self.xArray);
-    OBJC_RELEASE(self.y1Array);
+    OBJC_RELEASE(self.yArray);
     
     [super dealloc];
 }
@@ -57,16 +57,16 @@
         //! default value
         self.drawLineTypeOfX = LineDrawTypeDottedLine;
         self.drawLineTypeOfY = LineDrawTypeDottedLine;
-        self.isMultipleY = NO;
         self.isShowTipLine = NO;
         self.isEnableUserAction = NO;
-        self.isScaleToView = NO;
         self.isShowAnchorPoint = NO;
         
-        _xLineCount = 1;
+        self.xLineCount = 5;
         self.yLineCount = 5;
         
-        self.zoomScale = 1;
+        _zoomScaleNow = 1;
+        
+        self.zoomScaleMax = 2;
         
         self.backgroundColor = [UIColor clearColor];
         
@@ -74,15 +74,14 @@
         self.lineLabelAry = [NSArray array];
         
         self.xArray = [NSMutableArray array];
-        self.y1Array = [NSMutableArray array];
+        self.yArray = [NSMutableArray array];
 
-        /*
         self.tipLineView = [[[TipLineView alloc] init] autorelease];
         self.tipLineView.tipLineColor = self.tipLineColor;
         self.tipLineView.tipTextColor = self.tipTextColor;
-        
+
         [self addSubview:self.tipLineView];
-         */
+         
         //! 壓住不放事件
         UILongPressGestureRecognizer *longGestureRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handleLongTap:)];
         [self addGestureRecognizer:longGestureRecognizer];
@@ -117,15 +116,14 @@
     self.drawOriginContentHeight = self.frame.size.height - (_edgeInset.bottom + _edgeInset.top);
     
     //! 僅縮放x軸
-    self.drawContentWidth = self.drawOriginContentWidth * self.zoomScale;
-    self.drawContentHeight = self.drawOriginContentHeight;
+    self.drawContentWidth = self.drawOriginContentWidth * _zoomScaleNow;
+    self.drawContentHeight = self.drawOriginContentHeight * _zoomScaleNow;
     
-    //! +1 : 最右/上多一格
-//    self.xDrawLineCount = _xLineCount; //+ 1;
-    self.yDrawLineCount = self.yLineCount; //+ 1;
+    self.xDrawLineCount = self.xLineCount;
+    self.yDrawLineCount = self.yLineCount + 1; //! y 軸 +1是為了補滿空格位置(因為數量含軸線)
     
-    _xPerStepWidth = self.drawContentWidth / self.xDrawLineCount;
-    _yPerStepHeight = self.drawContentHeight / self.yDrawLineCount;
+    _xPerStepWidth = self.drawContentWidth / (self.xLineCount - 1); //! x 軸 -1 是因為填滿多的空格位置
+    _yPerStepHeight = self.drawContentHeight / self.yLineCount;
     
     [self setTipLineViewConfigure];
     
@@ -137,7 +135,7 @@
 {
     self.frame = frame;
     
-    self.zoomScale = 1;
+    _zoomScaleNow = 1;
     _contentScroll = CGPointMake(0, 0);
     
     _originPoint = CGPointMake(_edgeInset.left, _edgeInset.bottom);
@@ -150,15 +148,14 @@
     self.drawOriginContentHeight = self.frame.size.height - (_edgeInset.bottom + _edgeInset.top);
     
     //! 僅縮放x軸
-    self.drawContentWidth = self.drawOriginContentWidth * self.zoomScale;
-    self.drawContentHeight = self.drawOriginContentHeight;
+    self.drawContentWidth = self.drawOriginContentWidth * _zoomScaleNow;
+    self.drawContentHeight = self.drawOriginContentHeight * _zoomScaleNow;
     
-    //! +1 : 最右/上多一格
-//    self.xDrawLineCount = _xLineCount; //+ 1;
-    self.yDrawLineCount = self.yLineCount; //+ 1;
+    self.xDrawLineCount = self.xLineCount;
+    self.yDrawLineCount = self.yLineCount + 1; //! y 軸 +1是為了補滿空格位置(因為數量含軸線)
     
-    _xPerStepWidth = self.drawContentWidth / self.xDrawLineCount;
-    _yPerStepHeight = self.drawContentHeight / self.yDrawLineCount;
+    _xPerStepWidth = self.drawContentWidth / (self.xLineCount - 1); //! x 軸 -1 是因為填滿多的空格位置
+    _yPerStepHeight = self.drawContentHeight / self.yLineCount;
     
     [self setTipLineViewConfigure];
     
@@ -171,8 +168,14 @@
     self.tipLineView.xPerStepWidth = _xPerStepWidth;
     self.tipLineView.yPerStepHeight = _yPerStepHeight;
     self.tipLineView.contentScroll = _contentScroll;
-    self.tipLineView.xArray = self.xArray;
-    self.tipLineView.y1Array = self.y1Array;
+    self.tipLineView.originPoint = _originPoint;
+    self.tipLineView.leftTopPoint = _leftTopPoint;
+    self.tipLineView.rightBottomPoint = _rightBottomPoint;
+    self.tipLineView.rightTopPoint = _rightTopPoint;
+    self.tipLineView.yMax = self.yMax;
+    self.tipLineView.yMin = self.yMin;
+    self.tipLineView.drawContentWidth = self.drawContentWidth;
+    self.tipLineView.drawContentHeight = self.drawContentHeight;
     self.tipLineView.dataSourceAry = self.dataSourceAry;
     self.tipLineView.edgeInset = _edgeInset;
     
@@ -257,15 +260,15 @@
 {
     if (self.isEnableUserAction == YES) {
         
-        self.zoomScale = recognizer.scale;
+        _zoomScaleNow = recognizer.scale;
         
-        if(self.zoomScale <= 1){
+        if(_zoomScaleNow <= 1){
             
-            self.zoomScale = 1;
+            _zoomScaleNow = 1;
         }
-        else if(self.zoomScale >= 1.5) {
+        else if(_zoomScaleNow >= self.zoomScaleMax) {
         
-            self.zoomScale = 1.5;
+            _zoomScaleNow = self.zoomScaleMax;
         }
 
         [self updateViewWithFrame:self.frame];

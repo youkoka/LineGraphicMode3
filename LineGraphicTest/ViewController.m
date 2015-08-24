@@ -39,17 +39,19 @@
     
     NSMutableArray *labelAry = [NSMutableArray array];
     
-    for (int i = 0; i != 5; i++) {
+    for (int i = 0; i != 10; i++) {
         
         AnchorItem *item = [[[AnchorItem alloc] init] autorelease];
-        item.xValue = i * 2 + 1211;
+        NSInteger xVal = i * 2 + 1200;
+        
+        item.xValue = [NSString stringWithFormat:@"%ld", xVal];
         item.y1Value = 10 + (rand() % 100) * 0.01;
         item.y2Value = 8 + (rand() % 100) * 0.01;
-        item.dicDataSource = [NSDictionary dictionaryWithObject:[NSString stringWithFormat:@"%f,%f", item.xValue, item.y1Value] forKey:@"value"];
+//        item.isShowYAxisLine = (xVal % 1200) == 0 ? YES : NO;
+        item.dicDataSource = [NSDictionary dictionaryWithObject:[NSString stringWithFormat:@"%@,%f", item.xValue, item.y1Value] forKey:@"value"];
         [self.dataSourceAry addObject:item];
         
-        [labelAry addObject:[NSString stringWithFormat:@"%f/%f", item.xValue, item.y1Value]];
-        NSLog(@"(x = %f, y1 = %f, y1 = %f)", item.xValue, item.y1Value, item.y2Value);
+        [labelAry addObject:[NSString stringWithFormat:@"%@/%f", item.xValue, item.y1Value]];
     }
 
     CGRect rect = CGRectMake(5, 40,
@@ -60,11 +62,11 @@
     self.lineChartView.drawLineTypeOfY = LineDrawTypeNone;
     self.lineChartView.drawLineTypeOfX = LineDrawTypeDottedLine;
     self.lineChartView.isEnableUserAction = YES;
-    self.lineChartView.isScaleToView = YES;
     self.lineChartView.isShowTipLine = YES;
     self.lineChartView.isShowAnchorPoint = YES;
-//    self.lineChartView.xLineCount = 5;
-    self.lineChartView.yLineCount = 5;
+    self.lineChartView.xLineCount = [self.dataSourceAry count];
+    self.lineChartView.yLineCount = 10;
+    self.lineChartView.zoomScaleMax = 1.5;
     self.lineChartView.backgroundColor = [UIColor blackColor];
     self.lineChartView.tipLineColor = [UIColor whiteColor];
     self.lineChartView.tipTextColor = [UIColor whiteColor];
@@ -75,7 +77,7 @@
     self.lineChartView.xTextColor = [UIColor whiteColor];
     self.lineChartView.yTextColor = [UIColor whiteColor];
     
-    self.lineChartView.lineLabelAry = labelAry;
+//    self.lineChartView.lineLabelAry = labelAry;
     [self.lineChartView setDataSource:self.dataSourceAry];
     [self.view addSubview:self.lineChartView];
     
