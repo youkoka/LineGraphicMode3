@@ -64,7 +64,7 @@
         self.xLineCount = 5;
         self.yLineCount = 5;
         
-        _zoomScaleNow = 1;
+        _zoomScaleValueNow = 1;
         
         self.zoomScaleMax = 2;
         
@@ -115,9 +115,32 @@
     self.drawOriginContentWidth = self.frame.size.width - (_edgeInset.left + _edgeInset.right);
     self.drawOriginContentHeight = self.frame.size.height - (_edgeInset.bottom + _edgeInset.top);
     
+    self.drawContentWidth = self.drawOriginContentWidth;
+    self.drawContentHeight = self.drawOriginContentHeight;
+
     //! 僅縮放x軸
-    self.drawContentWidth = self.drawOriginContentWidth * _zoomScaleNow;
-    self.drawContentHeight = self.drawOriginContentHeight * _zoomScaleNow;
+    switch (self.zoomScaleAxis) {
+        
+        case ZoomScaleAxisX:
+        {
+            self.drawContentWidth = self.drawOriginContentWidth * _zoomScaleValueNow;
+        }
+            break;
+        case ZoomScaleAxisY:
+        {;
+            self.drawContentHeight = self.drawOriginContentHeight * _zoomScaleValueNow;
+        }
+            break;
+        case ZoomScaleAxisXY:
+        {
+            self.drawContentWidth = self.drawOriginContentWidth * _zoomScaleValueNow;
+            self.drawContentHeight = self.drawOriginContentHeight * _zoomScaleValueNow;
+        }
+            break;
+            
+        default:
+            break;
+    }
     
     self.xDrawLineCount = self.xLineCount;
     self.yDrawLineCount = self.yLineCount + 1; //! y 軸 +1是為了補滿空格位置(因為數量含軸線)
@@ -135,7 +158,7 @@
 {
     self.frame = frame;
     
-    _zoomScaleNow = 1;
+    _zoomScaleValueNow = 1;
     _contentScroll = CGPointMake(0, 0);
     
     _originPoint = CGPointMake(_edgeInset.left, _edgeInset.bottom);
@@ -147,9 +170,31 @@
     self.drawOriginContentWidth = self.frame.size.width - (_edgeInset.left + _edgeInset.right);
     self.drawOriginContentHeight = self.frame.size.height - (_edgeInset.bottom + _edgeInset.top);
     
-    //! 僅縮放x軸
-    self.drawContentWidth = self.drawOriginContentWidth * _zoomScaleNow;
-    self.drawContentHeight = self.drawOriginContentHeight * _zoomScaleNow;
+    self.drawContentWidth = self.drawOriginContentWidth;
+    self.drawContentHeight = self.drawOriginContentHeight;
+    
+    switch (self.zoomScaleAxis) {
+            
+        case ZoomScaleAxisX:
+        {
+            self.drawContentWidth = self.drawOriginContentWidth * _zoomScaleValueNow;
+        }
+            break;
+        case ZoomScaleAxisY:
+        {;
+            self.drawContentHeight = self.drawOriginContentHeight * _zoomScaleValueNow;
+        }
+            break;
+        case ZoomScaleAxisXY:
+        {
+            self.drawContentWidth = self.drawOriginContentWidth * _zoomScaleValueNow;
+            self.drawContentHeight = self.drawOriginContentHeight * _zoomScaleValueNow;
+        }
+            break;
+            
+        default:
+            break;
+    }
     
     self.xDrawLineCount = self.xLineCount;
     self.yDrawLineCount = self.yLineCount + 1; //! y 軸 +1是為了補滿空格位置(因為數量含軸線)
@@ -260,15 +305,15 @@
 {
     if (self.isEnableUserAction == YES) {
         
-        _zoomScaleNow = recognizer.scale;
+        _zoomScaleValueNow = recognizer.scale;
         
-        if(_zoomScaleNow <= 1){
+        if(_zoomScaleValueNow <= 1){
             
-            _zoomScaleNow = 1;
+            _zoomScaleValueNow = 1;
         }
-        else if(_zoomScaleNow >= self.zoomScaleMax) {
+        else if(_zoomScaleValueNow >= self.zoomScaleMax) {
         
-            _zoomScaleNow = self.zoomScaleMax;
+            _zoomScaleValueNow = self.zoomScaleMax;
         }
 
         [self updateViewWithFrame:self.frame];

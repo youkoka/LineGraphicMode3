@@ -23,6 +23,14 @@ typedef NS_ENUM(NSInteger, LineDrawType)
     
 };
 
+typedef NS_ENUM(NSInteger, ZoomScaleAxis)
+{
+    ZoomScaleAxisNone   = 0,
+    ZoomScaleAxisX      = 1 << 1,
+    ZoomScaleAxisY      = 1 << 2,
+    ZoomScaleAxisXY     = (ZoomScaleAxisX | ZoomScaleAxisY),
+};
+
 @interface ChartBaseView : UIView<UIGestureRecognizerDelegate>
 
 @property (readonly) UIEdgeInsets edgeInset;
@@ -105,10 +113,13 @@ typedef NS_ENUM(NSInteger, LineDrawType)
 @property BOOL isShowAnchorPoint;
 
 //! 縮放比例大小(預設值:1)
-@property(readonly) CGFloat zoomScaleNow;
+@property(readonly) CGFloat zoomScaleValueNow;
 
 //! 縮放最大比例(預設值:2)
 @property(assign) CGFloat zoomScaleMax;
+
+//! 縮放軸線設定
+@property (assign) ZoomScaleAxis zoomScaleAxis;
 
 //! 折線間隔值
 @property (nonatomic, strong) NSMutableArray *xArray;
