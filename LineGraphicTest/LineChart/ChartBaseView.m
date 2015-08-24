@@ -228,6 +228,22 @@
 
 }
 
+//! override YMin
+-(void) setYMin:(CGFloat)yMin
+{
+    _yMin = yMin;
+    
+    self.tipLineView.yMin = self.yMin;
+}
+
+//! override YMax
+-(void) setYMax:(CGFloat)yMax
+{
+    _yMax = yMax;
+    
+    self.tipLineView.yMax = self.yMax;
+}
+
 - (void)drawRect:(CGRect)rect {
 
     self.tipLineView.tipLineColor = self.tipLineColor;

@@ -72,7 +72,7 @@
     if ( self = [super initWithFrame:frame]) {
 
         self.isShowTipLine = YES;
-        self.hadDrawTipLine = NO;
+        self.hadDrawTipLine = YES;
         
         self.tipLineColor = [UIColor grayColor];
         self.tipTextColor = [UIColor blackColor];
