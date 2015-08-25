@@ -406,8 +406,11 @@
            
             UIFont *xFont = [UIFont fontWithName:@"Helvetica" size:12];
             CGSize xValSize = [valXStr sizeWithFont:xFont];
-           
-            TextLabel *lbXVal = [[TextLabel alloc] initWithFrame:CGRectMake(xPosition - (xValSize.width / 2 + xValSize.width / 4),  self.originPoint.y - 15, xValSize.width, xValSize.height)];
+            
+            CGFloat lbX_PosX = xPosition - (xValSize.width / 2 + xValSize.width / 4);
+            CGFloat lbX_PosY = self.originPoint.y - 15;
+            
+            TextLabel *lbXVal = [[TextLabel alloc] initWithFrame:CGRectMake(lbX_PosX, lbX_PosY, xValSize.width, xValSize.height)];
             lbXVal.text = valXStr;
             lbXVal.font = xFont;
             lbXVal.textColor = self.yTextColor;

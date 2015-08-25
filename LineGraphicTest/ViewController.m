@@ -78,7 +78,7 @@
     self.lineChartView.xTextColor = [UIColor whiteColor];
     self.lineChartView.yTextColor = [UIColor whiteColor];
     self.lineChartView.zoomScaleAxis = ZoomScaleAxisX;
-//    self.lineChartView.lineLabelAry = labelAry;
+    self.lineChartView.lineLabelAry = labelAry;
     [self.lineChartView setDataSource:self.dataSourceAry];
     [self.view addSubview:self.lineChartView];
     
