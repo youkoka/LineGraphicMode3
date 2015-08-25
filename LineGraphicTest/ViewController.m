@@ -39,19 +39,22 @@
     
     NSMutableArray *labelAry = [NSMutableArray array];
     
-    for (int i = 0; i != 10; i++) {
+    for (int i = 0; i != 100; i++) {
         
         AnchorItem *item = [[[AnchorItem alloc] init] autorelease];
-        NSInteger xVal = i * 2 + 1200;
+        NSInteger xVal = i * 2 + 10;
         
         item.xValue = [NSString stringWithFormat:@"%ld", xVal];
         item.y1Value = 10 + (rand() % 100) * 0.01;
         item.y2Value = 8 + (rand() % 100) * 0.01;
+        
+        item.isShowYAxisLine = (xVal % 5) == 0 ? YES : NO;
         [self.dataSourceAry addObject:item];
         
-        [labelAry addObject:[NSString stringWithFormat:@"%@/%f", item.xValue, item.y1Value]];
+        
     }
 
+    labelAry = [NSMutableArray arrayWithObjects:@"1/1", @"2/1", @"3/1", nil];
     CGRect rect = CGRectMake(5, 40,
                              self.view.frame.size.width - 5 - 5,
                              300);

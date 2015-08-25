@@ -81,7 +81,7 @@
         self.tipLineView.tipTextColor = self.tipTextColor;
 
         [self addSubview:self.tipLineView];
-         
+        
         //! 壓住不放事件
         UILongPressGestureRecognizer *longGestureRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handleLongTap:)];
         [self addGestureRecognizer:longGestureRecognizer];
@@ -142,6 +142,11 @@
             break;
     }
     
+    if ([self.lineLabelAry count] > 0) {
+        
+        self.xLineCount = [self.lineLabelAry count];
+    }
+   
     self.xDrawLineCount = self.xLineCount;
     self.yDrawLineCount = self.yLineCount + 1; //! y 軸 +1是為了補滿空格位置(因為數量含軸線)
     
@@ -257,6 +262,7 @@
     if (self.isShowTipLine == YES) {
         
         [self.tipLineView handleLongTap:recongizer];
+        [self bringSubviewToFront:self.tipLineView];
     }
 }
 

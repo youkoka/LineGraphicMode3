@@ -82,7 +82,10 @@ typedef NS_ENUM(NSInteger, ZoomScaleAxis)
 //! 資料
 @property (nonatomic, strong) NSArray *dataSourceAry;
 
-//! x軸顯示文字
+/*
+ x軸顯示文字
+ 設定此項目將會使 X軸標前文字依據陣列內容做寬度平均設定
+*/
 @property (nonatomic, strong) NSArray *lineLabelAry;
 
 @property (nonatomic, strong) UIColor *tipTextColor;

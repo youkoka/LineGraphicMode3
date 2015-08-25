@@ -130,11 +130,19 @@
     }
 
     
+    
+    CGFloat xPosStepWidth = 0.0f;
+    
+    if ([self.dataSourceAry count] > 0) {
+    
+        xPosStepWidth = self.drawContentWidth / [self.dataSourceAry count];
+    }
+    
     for (int i = 0; i != [self.dataSourceAry count]; i++) {
         
         AnchorItem *startItem = [self.dataSourceAry objectAtIndex:i];
         
-        CGFloat startPos = self.xPerStepWidth * i + self.originPoint.x + self.contentScroll.x;
+        CGFloat startPos = xPosStepWidth * i + self.originPoint.x + self.contentScroll.x;
         
         startAnchorPoint1.x = startPos;
         
@@ -201,7 +209,7 @@
             
             AnchorItem *endItem = [self.dataSourceAry objectAtIndex:i + 1];
             
-            CGFloat endPos = self.xPerStepWidth * (i + 1) + self.originPoint.x + self.contentScroll.x;
+            CGFloat endPos = xPosStepWidth * (i + 1) + self.originPoint.x + self.contentScroll.x;
             
             float y1Position =  self.drawContentHeight * ( (endItem.y1Value - self.yMin) / (self.yMax - self.yMin)) + self.originPoint.y + self.contentScroll.y;
             
