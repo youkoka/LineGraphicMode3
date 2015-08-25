@@ -47,6 +47,8 @@
 
 -(void) dealloc
 {
+    OBJC_RELEASE(self.anchorDataAry);
+    
     [super dealloc];
 }
 
