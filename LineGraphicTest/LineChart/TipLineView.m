@@ -112,13 +112,7 @@
         CGPoint startAnchorPoint2 = self.originPoint;
         CGPoint endAnchorPoint2 = self.originPoint;
         
-        CGFloat xPosStepWidth = 0.0f;
-        
-        if ([self.dataSourceAry count] > 0) {
-            
-            xPosStepWidth = self.drawContentWidth / [self.dataSourceAry count];
-        }
-
+        CGFloat xPerPosWidth = self.drawContentWidth / ([self.dataSourceAry count] - 1);
         
         for (int i = 0; i != [self.dataSourceAry count]; i++) {
         
@@ -126,7 +120,7 @@
                 
                 AnchorItem *startItem = [self.dataSourceAry objectAtIndex:i];
                 
-                CGFloat startPos = xPosStepWidth * i + self.contentScroll.x;
+                CGFloat startPos = xPerPosWidth * i + self.contentScroll.x;
                 
                 startAnchorPoint1.x = startPos;
                 
@@ -141,7 +135,7 @@
                     
                     AnchorItem *endItem = [self.dataSourceAry objectAtIndex:i + 1];
                     
-                    CGFloat endPos = xPosStepWidth * (i + 1) + self.contentScroll.x;
+                    CGFloat endPos =  xPerPosWidth * (i + 1) + self.contentScroll.x;
                     
                     float y1Position =  self.drawContentHeight * ( (endItem.y1Value - self.yMin) / (self.yMax - self.yMin)) + self.contentScroll.y;
                     

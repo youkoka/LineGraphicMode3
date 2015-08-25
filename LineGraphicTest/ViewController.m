@@ -39,7 +39,7 @@
     
     NSMutableArray *labelAry = [NSMutableArray array];
     
-    for (int i = 0; i != 100; i++) {
+    for (int i = 0; i != 10; i++) {
         
         AnchorItem *item = [[[AnchorItem alloc] init] autorelease];
         NSInteger xVal = i * 2 + 10;
@@ -48,7 +48,7 @@
         item.y1Value = 10 + (rand() % 100) * 0.01;
         item.y2Value = 8 + (rand() % 100) * 0.01;
         
-        item.isShowYAxisLine = (xVal % 5) == 0 ? YES : NO;
+        item.isShowYAxisLine = (xVal % 2) == 0 ? YES : NO;
         [self.dataSourceAry addObject:item];
         
         

@@ -146,7 +146,7 @@
         
         self.xLineCount = [self.lineLabelAry count];
     }
-   
+
     self.xDrawLineCount = self.xLineCount;
     self.yDrawLineCount = self.yLineCount + 1; //! y 軸 +1是為了補滿空格位置(因為數量含軸線)
     
@@ -201,6 +201,11 @@
             break;
     }
     
+    if ([self.lineLabelAry count] > 0) {
+        
+        self.xLineCount = [self.lineLabelAry count];
+    }
+
     self.xDrawLineCount = self.xLineCount;
     self.yDrawLineCount = self.yLineCount + 1; //! y 軸 +1是為了補滿空格位置(因為數量含軸線)
     

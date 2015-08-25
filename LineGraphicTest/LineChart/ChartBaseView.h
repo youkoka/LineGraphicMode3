@@ -43,9 +43,6 @@ typedef NS_ENUM(NSInteger, ZoomScaleAxis)
 //! default value : LineDrawTypeNone
 @property LineDrawType drawLineTypeOfY;
 
-//! Y 軸刻度間距值
-@property CGFloat yPreStepValue;
-
 //! 線圖繪圖區塊原始寬度
 @property CGFloat drawOriginContentWidth;
 

@@ -128,21 +128,14 @@
         
         [self.anchorAry removeAllObjects];
     }
-
     
-    
-    CGFloat xPosStepWidth = 0.0f;
-    
-    if ([self.dataSourceAry count] > 0) {
-    
-        xPosStepWidth = self.drawContentWidth / [self.dataSourceAry count];
-    }
+    CGFloat xPerPosWidth = self.drawContentWidth / ([self.dataSourceAry count] - 1);
     
     for (int i = 0; i != [self.dataSourceAry count]; i++) {
         
         AnchorItem *startItem = [self.dataSourceAry objectAtIndex:i];
         
-        CGFloat startPos = xPosStepWidth * i + self.originPoint.x + self.contentScroll.x;
+        CGFloat startPos =  xPerPosWidth * i + self.originPoint.x + self.contentScroll.x;
         
         startAnchorPoint1.x = startPos;
         
@@ -209,7 +202,7 @@
             
             AnchorItem *endItem = [self.dataSourceAry objectAtIndex:i + 1];
             
-            CGFloat endPos = xPosStepWidth * (i + 1) + self.originPoint.x + self.contentScroll.x;
+            CGFloat endPos = xPerPosWidth * (i + 1) + self.originPoint.x + self.contentScroll.x;
             
             float y1Position =  self.drawContentHeight * ( (endItem.y1Value - self.yMin) / (self.yMax - self.yMin)) + self.originPoint.y + self.contentScroll.y;
             
@@ -462,11 +455,11 @@
         self.yMax += temp;
         self.yMin = (self.yMin - temp) >= 0 ? (self.yMin - temp) : 0;
         
-        self.yPreStepValue = (self.yMax - self.yMin) / self.yLineCount;
+        CGFloat yPerStepValue = (self.yMax - self.yMin) / self.yLineCount;
         
         for (int i = 0; i != self.yDrawLineCount; i++) {
             
-            [self.yArray addObject:[NSNumber numberWithFloat: (self.yMin + i * self.yPreStepValue)]];
+            [self.yArray addObject:[NSNumber numberWithFloat: (self.yMin + i * yPerStepValue)]];
         }
     }
     else if([self.dataSourceAry count] == 1) {

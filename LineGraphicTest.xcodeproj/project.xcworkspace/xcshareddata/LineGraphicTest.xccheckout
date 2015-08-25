@@ -7,34 +7,34 @@
 	<key>IDESourceControlProjectIdentifier</key>
 	<string>0748CC64-E6A5-4FD9-A31F-ED86CCAC4E30</string>
 	<key>IDESourceControlProjectName</key>
-	<string>LineGraphicTest</string>
+	<string>project</string>
 	<key>IDESourceControlProjectOriginsDictionary</key>
 	<dict>
-		<key>FA7A56734E790F5A75BB794481AA1236911FCFEB</key>
-		<string>https://github.com/youkoka/LineGraphicTest.git</string>
+		<key>26691BE1C672B0186786FE27BAF2074E97E55425</key>
+		<string>https://github.com/youkoka/LineGraphicMode3.git</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
-	<string>LineGraphicTest.xcodeproj</string>
+	<string>LineGraphicTest.xcodeproj/project.xcworkspace</string>
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
-		<key>FA7A56734E790F5A75BB794481AA1236911FCFEB</key>
+		<key>26691BE1C672B0186786FE27BAF2074E97E55425</key>
 		<string>../..</string>
 	</dict>
 	<key>IDESourceControlProjectURL</key>
-	<string>https://github.com/youkoka/LineGraphicTest.git</string>
+	<string>https://github.com/youkoka/LineGraphicMode3.git</string>
 	<key>IDESourceControlProjectVersion</key>
 	<integer>111</integer>
 	<key>IDESourceControlProjectWCCIdentifier</key>
-	<string>FA7A56734E790F5A75BB794481AA1236911FCFEB</string>
+	<string>26691BE1C672B0186786FE27BAF2074E97E55425</string>
 	<key>IDESourceControlProjectWCConfigurations</key>
 	<array>
 		<dict>
 			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
 			<string>public.vcs.git</string>
 			<key>IDESourceControlWCCIdentifierKey</key>
-			<string>FA7A56734E790F5A75BB794481AA1236911FCFEB</string>
+			<string>26691BE1C672B0186786FE27BAF2074E97E55425</string>
 			<key>IDESourceControlWCCName</key>
-			<string>LineGraphicTest</string>
+			<string>LineGraphicTestMode3</string>
 		</dict>
 	</array>
 </dict>
