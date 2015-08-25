@@ -11,11 +11,31 @@
 #import "Constants.h"
 #import "CommentView.h"
 
+@interface TextLabel : UILabel
+
+@end
+
+@implementation TextLabel
+
+-(void) drawTextInRect:(CGRect)rect
+{
+    [super drawTextInRect:rect];
+    
+    //! 將圓點設為左下角
+    [self setTransform:CGAffineTransformMakeScale(1, -1)];
+}
+
+@end
 @interface LineChartView()
 
 @property (nonatomic, strong) NSMutableArray *anchorAry;
 
 @property (nonatomic, strong) CommentView *commentView;
+
+//! 儲存X/Y軸標籤值
+@property (nonatomic, strong) NSMutableArray *xLabelAry;
+@property (nonatomic, strong) NSMutableArray *yLabelAry;
+
 //! 產生 X/Y軸刻度
 -(void) buildAxisStepByDataSource;
 
@@ -26,6 +46,9 @@
 #if !__has_feature(objc_arc)
 -(void) dealloc
 {
+    OBJC_RELEASE(self.xLabelAry);
+    OBJC_RELEASE(self.yLabelAry);
+    
     OBJC_RELEASE(self.xLineColor);
     OBJC_RELEASE(self.yLineColor);
     
@@ -46,6 +69,9 @@
 -(id) initWithFrame:(CGRect)frame
 {
     if ( (self = [super initWithFrame:frame]) ) {
+        
+        self.xLabelAry = [NSMutableArray array];
+        self.yLabelAry = [NSMutableArray array];
         
         self.xLineColor = self.xAxisLineColor = [UIColor blackColor];
         self.yLineColor = self.yAxisLineColor = [UIColor blackColor];
@@ -248,6 +274,14 @@
     //! 畫虛線
 #pragma mark 畫 Y 軸上 X 軸(虛)線
     
+    if ([self.yLabelAry count] > 0) {
+        
+        for (UILabel *lb in self.yLabelAry) {
+            
+            [lb removeFromSuperview];
+        }
+    }
+
     
     if (self.drawLineTypeOfX == LineDrawTypeDashLine ||
         self.drawLineTypeOfX == LineDrawTypeNone) {
@@ -287,21 +321,37 @@
             }
             
             //! 顯示文字
-            NSString *valStr = [NSString stringWithFormat:@"%.2lf", [self.yArray[i] floatValue]];
-            CGSize size = [valStr sizeWithFont:[UIFont fontWithName:@"Helvetica" size:12]];
-            [[UIColor colorWithCGColor:self.xTextColor.CGColor] set];
-            CGContextSelectFont(context, "Helvetica", 12, kCGEncodingMacRoman);
-            const char *str = [valStr cStringUsingEncoding:NSUTF8StringEncoding];
-            CGContextShowTextAtPoint(context, 5, yPosition - (size.height / 2 - size.height / 4), str, strlen(str));
+            UIFont *yFont = [UIFont fontWithName:@"Helvetica" size:12];
+            NSString *valYStr = [NSString stringWithFormat:@"%.2lf", [self.yArray[i] floatValue]];
+            CGSize yValSize = [valYStr sizeWithFont:yFont];
+            
+            CGFloat lbY_PosX = 5;
+            CGFloat lbY_PosY = yPosition - (yValSize.height / 2 - yValSize.height / 4);
+            
+            TextLabel *lbYVal = [[TextLabel alloc] initWithFrame:CGRectMake(lbY_PosX, lbY_PosY, yValSize.width, yValSize.height)];
+            lbYVal.text = valYStr;
+            lbYVal.font = yFont;
+            lbYVal.textColor = self.xTextColor;
+            [self.yLabelAry addObject:lbYVal];
+            [self addSubview:lbYVal];
+            [lbYVal release];
         }
     }
     
 #pragma mark 畫 X 軸上 Y 軸(虛)線
 
+    if ([self.xLabelAry count] > 0) {
+        
+        for (UILabel *lb in self.xLabelAry) {
+            
+            [lb removeFromSuperview];
+        }
+    }
+    
     for (NSInteger i = 0; i < self.xDrawLineCount; i++) {
         
         //! 顯示文字
-        NSString *valStr = @"";
+        NSString *valXStr = @"";
         
         CGFloat xPosition = 0.0f;
         
@@ -317,6 +367,11 @@
                 
                 xPosition = self.xPerStepWidth * i + self.originPoint.x + self.contentScroll.x;
             }
+            
+            if ([self.lineLabelAry count] > 0 && i < [self.lineLabelAry count]) {
+                
+                valXStr = self.lineLabelAry[i];
+            }
         }
         else {
             
@@ -325,7 +380,7 @@
                 AnchorItem *anchorItem = [self.dataSourceAry objectAtIndex:i];
                 
                 xPosition = self.xPerStepWidth * i + self.originPoint.x + self.contentScroll.x;
-                valStr = anchorItem.xValue;
+                valXStr = anchorItem.xValue;
                 
                 isShowYAxisLine = anchorItem.isShowYAxisLine;
             }
@@ -348,19 +403,17 @@
                              endPoint:CGPointMake(xPosition, self.leftTopPoint.y)
                             lineColor:self.yLineColor width:0.5f];
             }
-            
-            
-            
-            if ([self.lineLabelAry count] > 0 && i < [self.lineLabelAry count]) {
-
-                valStr = self.lineLabelAry[i];                
-            }
            
-            CGSize size = [valStr sizeWithFont:[UIFont fontWithName:@"Helvetica" size:12]];
-            [[UIColor colorWithCGColor:self.yTextColor.CGColor] set];
-            CGContextSelectFont(context, "Helvetica", 12, kCGEncodingMacRoman);
-            const char *str = [valStr cStringUsingEncoding:NSUTF8StringEncoding];
-            CGContextShowTextAtPoint(context, xPosition - (size.width / 2 + size.width / 4), self.originPoint.y - 15, str, strlen(str));
+            UIFont *xFont = [UIFont fontWithName:@"Helvetica" size:12];
+            CGSize xValSize = [valXStr sizeWithFont:xFont];
+           
+            TextLabel *lbXVal = [[TextLabel alloc] initWithFrame:CGRectMake(xPosition - (xValSize.width / 2 + xValSize.width / 4),  self.originPoint.y - 15, xValSize.width, xValSize.height)];
+            lbXVal.text = valXStr;
+            lbXVal.font = xFont;
+            lbXVal.textColor = self.yTextColor;
+            [self.xLabelAry addObject:lbXVal];
+            [self addSubview:lbXVal];
+            [lbXVal release];
         }
     }
     
